@@ -1,22 +1,24 @@
+import 'dotenv/config';
 import { Client } from 'pg';
-import express, { json } from 'express';
+import express from 'express';
 
 const app = express();
-app.use(json());
+app.use(express.json());
 
 const con = new Client({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
-    ssl: { rejectUnauthorized: false }
+    port: Number(process.env.DB_PORT),
+    ssl: process.env.DB_SSL === 'true'
+        ? { rejectUnauthorized: false }
+        : false,
 });
 
 con.connect()
     .then(() => console.log("PostgreSQL conectado"))
-    .catch(err => console.error("Erro ao conectar:", err));
-
+    .catch(err => console.error("Erro ao conectar:", err.message));
 
 app.get('/produtos', async (req, res) => {
     try {
@@ -27,6 +29,7 @@ app.get('/produtos', async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log('API rodando em http://localhost:3000');
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`API rodando na porta ${PORT}`);
 });

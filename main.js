@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import { Client } from 'pg';
 import express from 'express';
 
@@ -18,7 +17,7 @@ const con = new Client({
 
 con.connect()
     .then(() => console.log("PostgreSQL conectado"))
-    .catch(err => console.error("Erro ao conectar:", err.message));
+    .catch(err => console.error("Erro ao conectar:", err));
 
 app.get('/produtos', async (req, res) => {
     try {
@@ -29,7 +28,6 @@ app.get('/produtos', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`API rodando na porta ${PORT}`);
+app.listen(process.env.PORT || 3000, () => {
+    console.log('API rodando');
 });
